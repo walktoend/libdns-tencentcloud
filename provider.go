@@ -2,6 +2,7 @@ package tencentcloud
 
 import (
 	"context"
+	"strings"
 
 	"github.com/libdns/libdns"
 )
@@ -28,7 +29,18 @@ func (p *Provider) AppendRecords(ctx context.Context, zone string, records []lib
 
 func (p *Provider) SetRecords(ctx context.Context, zone string, records []libdns.Record) ([]libdns.Record, error) {
 
+	recordListInDns, err := p.describeRecordList(ctx, zone)
+		if err != nil {
+			return nil, err
+		}
+
 	for _, record := range records {
+		for _, recordInDns := range recordListInDns {
+			if strings.EqualFold(record.Name, recordInDns.Name) {
+				record.ID = recordInDns.ID
+			}
+		}
+
 		if err := p.modifyRecord(ctx, zone, record); err != nil {
 			return nil, err
 		}

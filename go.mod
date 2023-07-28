@@ -1,4 +1,4 @@
-module github.com/libdns/tencentcloud
+module github.com/walktoend/libdns-tencentcloud
 
 go 1.18
 
